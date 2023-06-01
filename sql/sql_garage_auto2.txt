@@ -1,0 +1,191 @@
+
+/*************requete de création de la base de données*******************/
+
+CREATE DATABASE IF NOT EXISTS garage_automobile
+
+/*......................requetes créations des tables.......................*/
+
+
+DROP TABLE IF EXISTS societe ; 
+CREATE TABLE societe (
+nom VARCHAR(50) NOT NULL, 
+pays VARCHAR(100), ville VARCHAR(100), 
+activite TEXT, 
+PRIMARY KEY (nom) 
+);
+
+DROP TABLE IF EXISTS admin ;
+CREATE TABLE admin (
+id_admin INT(11)  AUTO_INCREMENT NOT NULL, 
+nom_admin VARCHAR(100), 
+prenom_admin VARCHAR(100), 
+adresse_admin VARCHAR(100), 
+sexe_admin CHAR(1), 
+telephone_admin INT(30), 
+email_admin VARCHAR(100), 
+mot_de_pass_admin VARCHAR(100), 
+nom VARCHAR(50) NOT NULL, 
+PRIMARY KEY (id_admin) 
+);
+
+DROP TABLE IF EXISTS utilisateur ; 
+CREATE TABLE utilisateur (
+id_ut BIGINT  AUTO_INCREMENT NOT NULL, 
+email_ut VARCHAR(100), 
+mot_de_passe_ut VARCHAR(100), 
+PRIMARY KEY (id_ut) 
+);
+
+DROP TABLE IF EXISTS temoignages ; 
+CREATE TABLE temoignages (
+id_tem INT(11)  AUTO_INCREMENT NOT NULL, 
+nom_tem VARCHAR(100), 
+prenom_tem VARCHAR(100), 
+message TEXT, 
+PRIMARY KEY (id_tem) 
+);
+
+DROP TABLE IF EXISTS horaires_ouvertures ; 
+CREATE TABLE horaires_ouvertures (
+id_hr INT(11)  AUTO_INCREMENT NOT NULL, 
+jours VARCHAR(100), 
+heure_matin VARCHAR(100), 
+heure_aprem VARCHAR(100), 
+id_admin INT(11) NOT NULL, 
+PRIMARY KEY (id_hr) 
+);
+
+DROP TABLE IF EXISTS services ; 
+CREATE TABLE services (
+id_serv INT(11)  AUTO_INCREMENT NOT NULL, 
+reparation_carrosserie VARCHAR(100), 
+reparation_mecanique VARCHAR(100), 
+entretien_voiture VARCHAR(100), 
+vente_voiture_occasion TEXT, 
+PRIMARY KEY (id_serv) 
+);
+
+DROP TABLE IF EXISTS clients ; 
+CREATE TABLE clients (
+id_client INT(11)  AUTO_INCREMENT NOT NULL, 
+nom_client VARCHAR(100), 
+prenom_client VARCHAR(100), 
+ville_client VARCHAR(100), 
+id_cont INT(11) NOT NULL, 
+PRIMARY KEY (id_client) 
+);
+
+DROP TABLE IF EXISTS employes ; 
+CREATE TABLE employes (
+id_emp BIGINT(11)  AUTO_INCREMENT NOT NULL, 
+nom_emp VARCHAR(100), 
+prenom_emp VARCHAR(100), 
+adresse_emp VARCHAR(100), 
+sexe_emp CHAR(1), 
+telephone_emp INT(30), 
+email_emp VARCHAR(100), 
+mot_de_pass_emp VARCHAR(100), 
+nom VARCHAR(50) NOT NULL, 
+PRIMARY KEY (id_emp) 
+);
+
+DROP TABLE IF EXISTS vehicules ; 
+CREATE TABLE vehicules (
+immatricule_veh VARCHAR(100) NOT NULL, 
+couleur VARCHAR(30), 
+modele_veh VARCHAR(100), 
+prix_veh NUMERIC, 
+description_veh TEXT, 
+kilometrage_veh NUMERIC, 
+annee_circulation_veh DATE, 
+type_de_moteur_veh VARCHAR(100), 
+nbre_de_places_veh INT(20), 
+id_gal INT(11) NOT NULL, 
+PRIMARY KEY (immatricule_veh) 
+);
+
+DROP TABLE IF EXISTS contact ; 
+CREATE TABLE contact (
+id_cont INT(11)  AUTO_INCREMENT NOT NULL, 
+nom_cont VARCHAR(100), 
+prenom_cont VARCHAR(100), 
+email_cont VARCHAR(100), 
+message_cont TEXT, 
+PRIMARY KEY (id_cont) 
+);
+
+DROP TABLE IF EXISTS gallerie ; 
+CREATE TABLE gallerie (
+id_gal INT(11)  AUTO_INCREMENT NOT NULL, 
+photo_gal BLOB, 
+PRIMARY KEY (id_gal) 
+);
+
+................................................................................................................................................................
+
+DROP TABLE IF EXISTS gerer ; CREATE TABLE gerer (id_emp BIGINT(11)  AUTO_INCREMENT NOT NULL, id_serv INT(11) NOT NULL, PRIMARY KEY (id_emp,  id_serv) );  
+
+DROP TABLE IF EXISTS ajoute ; CREATE TABLE ajoute (id_emp BIGINT(11)  AUTO_INCREMENT NOT NULL, id_tem INT(11) NOT NULL, PRIMARY KEY (id_emp,  id_tem) );  
+
+DROP TABLE IF EXISTS laisse ; CREATE TABLE laisse (id_client INT(11)  AUTO_INCREMENT NOT NULL, id_tem INT(11) NOT NULL, PRIMARY KEY (id_client,  id_tem) );  
+
+DROP TABLE IF EXISTS ajouter ; CREATE TABLE ajouter (id_emp BIGINT(11)  AUTO_INCREMENT NOT NULL, immatricule_veh VARCHAR(100) NOT NULL, date_aj DATE, PRIMARY KEY(id_emp,immatricule_veh) );
+
+...........................................................................................................................................................................................
+
+ALTER TABLE admin ADD CONSTRAINT FK_admin_nom FOREIGN KEY (nom) REFERENCES societe (nom); 
+
+ALTER TABLE horaires_ouvertures ADD CONSTRAINT FK_horaires_ouvertures_id_admin FOREIGN KEY (id_admin) REFERENCES admin (id_admin); 
+
+ALTER TABLE clients ADD CONSTRAINT FK_clients_id_cont FOREIGN KEY (id_cont) REFERENCES contact (id_cont); 
+
+ALTER TABLE employes ADD CONSTRAINT FK_employes_nom FOREIGN KEY (nom) REFERENCES societe (nom); 
+
+ALTER TABLE vehicules ADD CONSTRAINT FK_vehicules_id_gal FOREIGN KEY (id_gal) REFERENCES gallerie (id_gal); 
+
+ALTER TABLE gerer ADD CONSTRAINT FK_gerer_id_emp FOREIGN KEY (id_emp) REFERENCES employes (id_emp); 
+
+ALTER TABLE gerer ADD CONSTRAINT FK_gerer_id_serv FOREIGN KEY (id_serv) REFERENCES services (id_serv);
+ 
+ALTER TABLE ajoute ADD CONSTRAINT FK_ajoute_id_emp FOREIGN KEY (id_emp) REFERENCES employes (id_emp); 
+
+ALTER TABLE ajoute ADD CONSTRAINT FK_ajoute_id_tem FOREIGN KEY (id_tem) REFERENCES temoignages (id_tem); 
+
+ALTER TABLE laisse ADD CONSTRAINT FK_laisse_id_client FOREIGN KEY (id_client) REFERENCES clients (id_client); 
+
+ALTER TABLE laisse ADD CONSTRAINT FK_laisse_id_tem FOREIGN KEY (id_tem) REFERENCES temoignages (id_tem); 
+
+ALTER TABLE ajouter ADD CONSTRAINT FK_ajouter_id_emp FOREIGN KEY (id_emp) REFERENCES employes (id_emp); 
+
+ALTER TABLE ajouter ADD CONSTRAINT FK_ajouter_immatricule_veh FOREIGN KEY (immatricule_veh) REFERENCES vehicules (immatricule_veh); 
+
+..................................................................................................................................................................................
+
+
+# Modèle logique de données
+  
+societe (nom, pays, ville, activite)
+  
+admin (id_admin, nom_admin, prenom_admin, adresse_admin, sexe_admin, telephone_admin, email_admin, mot_de_pass_admin, #nom)  
+
+utilisateur (id_ut, email_ut, mot_de_passe_ut)
+  
+temoignages (id_tem, nom_tem, prenom_tem, message)  
+
+horaires_ouvertures (id_hr, jours, heure_matin, heure_aprem, #id_admin)  
+
+services (id_serv, reparation_carrosserie, reparation_mecanique, entretien_voiture, vente_voiture_occasion)  
+
+clients (id_client, nom_client, prenom_client, ville_client, #id_cont)  
+
+employes (id_emp, nom_emp, prenom_emp, adresse_emp, sexe_emp, telephone_emp, email_emp, mot_de_pass_emp, #nom) 
+ 
+vehicules (immatricule_veh, couleur, modele_veh, prix_veh, description_veh, kilometrage_veh, annee_circulation_veh, type_de_moteur_veh, nbre_de_places_veh, #id_gal)
+  
+contact (id_cont, nom_cont, prenom_cont, email_cont, message_cont)  
+
+gallerie (id_gal, photo_gal)  gerer (id_emp, id_serv)  
+
+ajoute (id_emp, id_tem)  laisse (id_client, id_tem) 
+ 
+ajouter (id_emp, immatricule_veh, date_aj) 
